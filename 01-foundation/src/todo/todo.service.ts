@@ -12,8 +12,21 @@ export class TodoService {
     { id: 3, description: 'Piedra del Espacio', done: true },
   ];
 
-  create(createTodoDto: CreateTodoDto) {
-    return 'This action adds a new todo';
+  create(createTodoDto: CreateTodoDto): Todo {
+
+    const { description } = createTodoDto;
+
+    const maxId = this.todos.length > 0 ? Math.max(...this.todos.map(todo => todo.id)) : 0;
+
+    const newTodo = {
+      id: maxId + 1,
+      description,
+      done: false,
+    }
+
+    this.todos.push(newTodo);
+
+    return newTodo;
   }
 
   findAll(): Todo[] {
