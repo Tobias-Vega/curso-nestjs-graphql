@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt'
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
@@ -40,7 +40,10 @@ export class UsersService {
     try {
       return await this.usersRepository.findOneByOrFail({ email });
     } catch (error) {
-      this.handleDBErrors(error);
+      this.handleDBErrors({
+        code: 'error-001',
+        detail: `${ email } not found`
+      });
     }
   }
 
@@ -55,6 +58,10 @@ export class UsersService {
   private handleDBErrors(error: any): never {
     if (error.code === '23505') {
       throw new ConflictException(error.detail.replace('Key', ''));
+    }
+
+    if (error.code === 'error-001') {
+      throw new NotFoundException(error.detail);
     }
     
     this.logger.error(error);
