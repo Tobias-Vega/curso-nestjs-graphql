@@ -18,7 +18,23 @@ import { AuthModule } from './auth/auth.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       plugins: [
         ApolloServerPluginLandingPageLocalDefault()
-      ]
+      ],
+      formatError: (error) => {
+        const originalError = error.extensions?.originalError as any;
+
+        if (!originalError) {
+          return {
+            message: error.message,
+            code: error.extensions?.code,
+          }
+        }
+
+        return {
+            message: error.message,
+            code: error.extensions?.code,
+            status: error.extensions?.status,
+        }
+      }
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
