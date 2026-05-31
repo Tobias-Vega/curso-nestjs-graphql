@@ -34,7 +34,8 @@ type Mutation {
   updateItem(updateItemInput: UpdateItemInput!): Item!
   removeItem(id: ID!): Item!
   blockUser(id: ID!): User!
-  signup(signupInput: SignUpInput!): AuthResponse!
+  signup(signupInput: SignupInput!): AuthResponse!
+  signin(signinInput: SigninInput!): AuthResponse!
 }
 
 input CreateItemInput {
@@ -50,8 +51,13 @@ input UpdateItemInput {
   id: ID!
 }
 
-input SignUpInput {
+input SignupInput {
   email: String!
   fullName: String!
+  password: String!
+}
+
+input SigninInput {
+  email: String!
   password: String!
 }

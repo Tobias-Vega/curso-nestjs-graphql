@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { SignUpInput } from './dto/input/signup.input';
+import { SignupInput } from './dto/input/signup.input';
 import { AuthResponse } from './types/auth-response.types';
 import { UsersService } from '../users/users.service';
+import { SigninInput } from './dto/input';
 
 @Injectable()
 export class AuthService {
@@ -10,7 +11,7 @@ export class AuthService {
     private readonly usersService: UsersService,
   ) {}
 
-  async signup(signUpInput: SignUpInput): Promise<AuthResponse> {
+  async signup(signUpInput: SignupInput): Promise<AuthResponse> {
     const user = await this.usersService.create(signUpInput);
 
     // TODO: crear JWT
@@ -18,5 +19,22 @@ export class AuthService {
 
 
     return { token, user };
+  }
+
+  async signin(signinInput: SigninInput): Promise<AuthResponse> {
+
+    const { email, password } = signinInput;
+
+    const user = await this.usersService.findOneByEmail(email);
+
+    const token = 'ABC123';
+
+    return {
+      token,
+      user,
+    }
+
+
+
   }
 }

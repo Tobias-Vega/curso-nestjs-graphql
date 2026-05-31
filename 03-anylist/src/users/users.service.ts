@@ -2,7 +2,7 @@ import { ConflictException, Injectable, InternalServerErrorException, Logger } f
 import * as bcrypt from 'bcrypt'
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
-import { SignUpInput } from '../auth/dto/input/signup.input';
+import { SignupInput } from '../auth/dto/input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -16,7 +16,7 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async create(signUpInput: SignUpInput): Promise<User> {
+  async create(signUpInput: SignupInput): Promise<User> {
 
     try {
       
@@ -36,8 +36,12 @@ export class UsersService {
     return [];
   }
 
-  findOne(id: string): Promise<User> {
-    throw new Error('Method not implemented');
+  async findOneByEmail(email: string): Promise<User> {
+    try {
+      return await this.usersRepository.findOneByOrFail({ email });
+    } catch (error) {
+      this.handleDBErrors(error);
+    }
   }
 
   update(id: number, updateUserInput: UpdateUserInput) {
