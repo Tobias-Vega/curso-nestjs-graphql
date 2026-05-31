@@ -53,4 +53,29 @@ export class TodoResolver {
   ): Boolean {
     return this.todoService.remove(id);
   }
+
+  // Aggregation
+  @Query(() => Int, {
+    name: 'totalTodos',
+  })
+  totalTodos(): number {
+    return this.todoService.totalTodos;
+  }
+
+  // completedTodos
+  @Query(() => Int, {
+    name: 'totalCompletedTodos',
+  })
+  totalCompletedTodos(): number {
+    return this.todoService.totalCompletedTodos;
+  }
+
+  // pendingTodos
+  @Query(() => Int, {
+    name: 'totalPendingTodos',
+  })
+  totalPendingTodos(): number {
+    return this.todoService.totalPendingTodos;
+  }
+
 }
