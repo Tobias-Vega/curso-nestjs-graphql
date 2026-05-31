@@ -32,6 +32,6 @@ export class TodoResolver {
   createTodo(
     @Args('createTodoInput') createTodoInput: CreateTodoInput
   ) {
-
+    return this.todoService.create(createTodoInput);
   }
 }
