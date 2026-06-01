@@ -6,6 +6,7 @@ import { UsersService } from '../users/users.service';
 import { SigninInput } from './dto/input';
 import * as bcrypt from 'bcrypt';
 import { UserResponse } from './interfaces/user-response.interface';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -51,6 +52,12 @@ export class AuthService {
     const { password, ...restUser } = user;
 
     return restUser;
+  }
+
+  revalidateToken(user: User): AuthResponse {
+    const token = this.getJwtToken(user.id);
+
+    return { token, user };
   }
 
   private getJwtToken(userId: string) {

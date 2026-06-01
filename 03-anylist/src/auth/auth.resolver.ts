@@ -30,7 +30,6 @@ export class AuthResolver {
   revalidateToken(
     @CurrentUser() user: User
   ): AuthResponse {
-    // return this.authService.revalidateToken();
-    throw new Error('Not implemented')
+    return this.authService.revalidateToken(user);
   }
 }
