@@ -1,8 +1,9 @@
+import { join } from 'path';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ApolloDriver } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { join } from 'path';
+import { JwtService } from '@nestjs/jwt';
 import { ItemsModule } from './items/items.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,29 +13,42 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      playground: false,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      plugins: [
-        ApolloServerPluginLandingPageLocalDefault()
-      ],
-      formatError: (error) => {
-        const originalError = error.extensions?.originalError as any;
 
-        if (!originalError) {
+    GraphQLModule.forRootAsync({
+      driver: ApolloDriver,
+      imports: [AuthModule],
+      inject: [JwtService],
+      useFactory: async (jwtService: JwtService) => ({
+        playground: false,
+        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        plugins: [
+          ApolloServerPluginLandingPageLocalDefault()
+        ],
+        context({ req }) {
+          // const token = req.headers.authorization?.replace('Bearer ', '');
+
+          // if (!token) throw new Error('Token needed');
+
+          // const payload = jwtService.decode(token);
+          // if (!payload) throw new Error('Token not valid');
+        },
+        formatError: (error) => {
+          const originalError = error.extensions?.originalError as any;
+
+          if (!originalError) {
+            return {
+              message: error.message,
+              code: error.extensions?.code,
+            }
+          }
+
           return {
             message: error.message,
             code: error.extensions?.code,
+            status: error.extensions?.status,
           }
         }
-
-        return {
-            message: error.message,
-            code: error.extensions?.code,
-            status: error.extensions?.status,
-        }
-      }
+      })
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -53,4 +67,4 @@ import { AuthModule } from './auth/auth.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
