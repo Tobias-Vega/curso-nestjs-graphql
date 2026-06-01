@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { SignupInput } from './dto/input/signup.input';
 import { AuthResponse } from './types/auth-response.types';
 import { UsersService } from '../users/users.service';
@@ -10,14 +11,13 @@ export class AuthService {
 
   constructor(
     private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async signup(signUpInput: SignupInput): Promise<AuthResponse> {
     const user = await this.usersService.create(signUpInput);
 
-    // TODO: crear JWT
-    const token = 'ABC123';
-
+    const token = this.getJwtToken(user.id);
 
     return { token, user };
   }
@@ -32,12 +32,15 @@ export class AuthService {
       throw new BadRequestException(`Email or Password do not match`);
     }
 
-    // TODO: JWT
-    const token = 'ABC123';
+    const token = this.getJwtToken(user.id);
 
     return {
       token,
       user,
     }
+  }
+
+  private getJwtToken(userId: string) {
+    return this.jwtService.sign({ id: userId });
   }
 }
