@@ -40,9 +40,9 @@ export class User {
   @Field(() => Boolean)
   isActive: boolean;
 
-  // TODO: relaciones
-  @ManyToOne(() => User, (user) => user.lastUpdateBy, {
+  @ManyToOne(() => User, {
     nullable: true,
+    lazy: true,
   })
   @JoinColumn({ name: 'last_update_by' })
   @Field(() => User, {
