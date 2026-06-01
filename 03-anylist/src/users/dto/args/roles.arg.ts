@@ -5,7 +5,7 @@ import { ArgsType, Field } from "@nestjs/graphql";
 @ArgsType()
 export class ValidRolesArgs {
 
-  @Field(() => [String], {
+  @Field(() => [ValidRoles], {
     nullable: true,
   })
   @IsArray()
