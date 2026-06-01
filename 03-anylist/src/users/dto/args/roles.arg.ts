@@ -9,5 +9,5 @@ export class ValidRolesArgs {
     nullable: true,
   })
   @IsArray()
-  roles: string[] = [];
+  roles: ValidRoles[] = [];
 }
