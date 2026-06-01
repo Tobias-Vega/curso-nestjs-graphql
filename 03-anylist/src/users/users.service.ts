@@ -1,6 +1,6 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt'
-import { UpdateUserInput } from './dto/update-user.input';
+import { UpdateUserInput } from './dto/inputs/update-user.input';
 import { User } from './entities/user.entity';
 import { SignupInput } from '../auth/dto/input';
 import { InjectRepository } from '@nestjs/typeorm';
