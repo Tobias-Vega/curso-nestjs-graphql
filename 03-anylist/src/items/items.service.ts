@@ -71,4 +71,14 @@ export class ItemsService {
 
     return { ...item, id };
   }
+
+  async itemCountByUser(user: User): Promise<number> {
+    return this.itemRepository.count({
+      where: {
+        user: {
+          id: user.id
+        }
+      }
+    })
+  }
 }
