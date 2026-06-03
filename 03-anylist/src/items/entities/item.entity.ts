@@ -28,6 +28,7 @@ export class Item {
 
   @ManyToOne(() => User, (user) => user.items, {
     nullable: false,
+    lazy: true,
   })
   @Index('user_id_index')
   @Field(() => User)
