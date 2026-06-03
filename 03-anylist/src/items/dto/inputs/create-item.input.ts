@@ -9,9 +9,9 @@ export class CreateItemInput {
   @MaxLength(80)
   name: string;
 
-  @Field(() => Float)
-  @IsPositive()
-  quantity: number;
+  // @Field(() => Float)
+  // @IsPositive()
+  // quantity: number;
 
   @Field(() => String, {
     nullable: true,
