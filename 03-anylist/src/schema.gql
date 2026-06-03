@@ -50,7 +50,7 @@ type Mutation {
   removeItem(id: ID!): Item!
 
   """Ejecuta la construccón de la base de datos"""
-  excecuteSeed: Boolean!
+  executeSeed: Boolean!
 }
 
 input SignupInput {
