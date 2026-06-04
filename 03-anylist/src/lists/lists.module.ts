@@ -7,5 +7,6 @@ import { List } from './entities/list.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([List])],
   providers: [ListsResolver, ListsService],
+  exports: [TypeOrmModule, ListsService]
 })
 export class ListsModule {}
