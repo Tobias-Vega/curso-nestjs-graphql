@@ -16,6 +16,7 @@ type User {
 type Item {
   id: ID!
   name: String!
+  category: String!
   quantityUnits: String
   user: User!
 }
@@ -75,11 +76,13 @@ input UpdateUserInput {
 
 input CreateItemInput {
   name: String!
+  category: String!
   quantityUnits: String
 }
 
 input UpdateItemInput {
   name: String
+  category: String
   quantityUnits: String
   id: ID!
 }

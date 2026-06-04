@@ -18,6 +18,10 @@ export class Item {
   // @Field(() => Float)
   // quantity: number;
 
+  @Column('varchar')
+  @Field(() => String)
+  category: string;
+
   @Column('varchar', {
     nullable: true,
   })
