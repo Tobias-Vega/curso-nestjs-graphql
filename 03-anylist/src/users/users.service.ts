@@ -6,6 +6,7 @@ import { SignupInput } from '../auth/dto/input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ValidRoles } from '../auth/enums/valid-roles.enums';
+import { PaginationArgs, SearchArgs } from '../common/dto/args';
 
 @Injectable()
 export class UsersService {
@@ -15,33 +16,43 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create(signUpInput: SignupInput): Promise<User> {
 
     try {
-      
+
       const newUser = this.usersRepository.create({
         ...signUpInput,
         password: bcrypt.hashSync(signUpInput.password, 10),
       });
-  
+
       return await this.usersRepository.save(newUser);
 
-    } catch(error) {
+    } catch (error) {
       this.handleDBErrors(error);
     }
   }
 
-  async findAll(roles: ValidRoles[]): Promise<User[]> {
+  async findAll(roles: ValidRoles[], paginationArgs: PaginationArgs, searchArgs: SearchArgs): Promise<User[]> {
 
-    if (roles.length === 0) 
-      return this.usersRepository.find();
+    const { limit, offset } = paginationArgs;
+    const { search } = searchArgs;
 
-    return this.usersRepository.createQueryBuilder()
-    .andWhere('ARRAY[roles] && ARRAY[:...roles]')
-    .setParameter('roles', roles)
-    .getMany();
+    const queryBuilder = this.usersRepository.createQueryBuilder()
+      .take(limit)
+      .skip(offset)
+      .orderBy('full_name', 'ASC');
+
+    if (search) {
+      queryBuilder.andWhere(`full_name ilike :fullName`, { fullName: `%${search}%` });
+    }
+
+    if (roles.length > 0) {
+      queryBuilder.andWhere('ARRAY[roles] && ARRAY[:...roles]', { roles });
+    }
+
+    return queryBuilder.getMany();
   }
 
   async findOneByEmail(email: string): Promise<User> {
@@ -50,7 +61,7 @@ export class UsersService {
     } catch (error) {
       this.handleDBErrors({
         code: 'error-001',
-        detail: `${ email } not found`
+        detail: `${email} not found`
       });
     }
   }
@@ -84,7 +95,7 @@ export class UsersService {
   }
 
   async block(id: string, adminUser: User): Promise<User> {
-    
+
     const userToBlock = await this.findOneById(id);
 
     userToBlock.isActive = false;
@@ -102,7 +113,7 @@ export class UsersService {
     if (error.code === 'error-001') {
       throw new NotFoundException(error.detail);
     }
-    
+
     this.logger.error(error);
 
     throw new InternalServerErrorException('Unexpected errors - Please check server logs');
