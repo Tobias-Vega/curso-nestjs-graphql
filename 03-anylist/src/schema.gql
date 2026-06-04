@@ -2,10 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ListItem {
+  id: ID!
+  quantity: Float!
+  completed: Boolean!
+  list: List!
+  item: Item!
+}
+
 type List {
   id: ID!
   name: String!
   user: User!
+  listItems: [ListItem!]!
 }
 
 type User {
@@ -27,17 +36,12 @@ type Item {
   category: String!
   quantityUnits: String
   user: User!
+  listItems: [ListItem!]!
 }
 
 type AuthResponse {
   token: String!
   user: User!
-}
-
-type ListItem {
-  id: ID!
-  quantity: Float!
-  completed: Boolean!
 }
 
 type Query {
