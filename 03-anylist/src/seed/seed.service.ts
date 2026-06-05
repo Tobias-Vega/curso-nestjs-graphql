@@ -7,7 +7,10 @@ import { User } from '../users/entities/user.entity';
 import { SEED_ITEMS, SEED_USERS } from './data/seed-data';
 import { UsersService } from '../users/users.service';
 import { ItemsService } from '../items/items.service';
-import { CreateItemInput } from '../items/dto/inputs';
+import { ListItem } from '../list-item/entities/list-item.entity';
+import { ListItemService } from '../list-item/list-item.service';
+import { List } from '../lists/entities/list.entity';
+import { ListsService } from '../lists/lists.service';
 
 @Injectable()
 export class SeedService {
@@ -20,9 +23,15 @@ export class SeedService {
     private readonly itemsRespository: Repository<Item>,
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(ListItem)
+    private readonly listItemRepository: Repository<ListItem>,
+    @InjectRepository(List)
+    private readonly listsRepository: Repository<List>,
 
     private readonly usersService: UsersService,
     private readonly itemsService: ItemsService,
+    private readonly listItemsService: ListItemService,
+    private readonly listsService: ListsService,
   ) {
     this.isProd = configService.get('STATE') === 'prod';
   }
@@ -45,6 +54,18 @@ export class SeedService {
   }
 
   async deleteDatabase() {
+
+    // borrar listItems
+    await this.listItemRepository.createQueryBuilder()
+      .delete()
+      .where({})
+      .execute();
+
+    // borrar listas
+    await this.listsRepository.createQueryBuilder()
+      .delete()
+      .where({})
+      .execute();
 
     // borrar items
     await this.itemsRespository.createQueryBuilder()
