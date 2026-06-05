@@ -14,7 +14,8 @@ type List {
   id: ID!
   name: String!
   user: User!
-  items: [ListItem!]!
+  items(offset: Int = 0, limit: Int = 10, search: String): [ListItem!]!
+  totalItems: Int!
 }
 
 type User {
@@ -52,7 +53,6 @@ type Query {
   item(id: ID!): Item!
   lists(offset: Int = 0, limit: Int = 10, search: String): [List!]!
   list(id: ID!): List!
-  listItem: [ListItem!]!
 }
 
 """Allowed system roles (user, admin, superuser)"""

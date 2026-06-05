@@ -97,6 +97,6 @@ export class ItemsService {
           id: user.id
         }
       }
-    })
+    });
   }
 }

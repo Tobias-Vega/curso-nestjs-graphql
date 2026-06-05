@@ -8,7 +8,6 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 import { PaginationArgs, SearchArgs } from '../common/dto/args';
 import { ListItem } from '../list-item/entities/list-item.entity';
-import { Item } from '../items/entities/item.entity';
 import { ListItemService } from '../list-item/list-item.service';
 
 @Resolver(() => List)
@@ -62,8 +61,19 @@ export class ListsResolver {
 
   @ResolveField(() => [ListItem], { name: 'items' })
   async getListItems(
+    @Args() paginationArgs: PaginationArgs,
+    @Args() searchArgs: SearchArgs,
     @Parent() list: List,
   ): Promise<ListItem[]> {
-    return await this.listItemService.findAll();
+    return await this.listItemService.findAll(list, paginationArgs, searchArgs);
   }
+
+  @ResolveField(() => Int, { name: 'totalItems' })
+  async countListItemsByList(
+    @Parent() list: List,
+  ): Promise<number> {
+    return await this.listItemService.countListItemsByList(list);
+  }
+
+
 }
